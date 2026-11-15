@@ -9,6 +9,7 @@ find_package(raylib REQUIRED)
 
 add_executable(quantumblast
   src/quantum.c
+  src/meteors/meteors.c
 )
 
 target_compile_options(quantumblast PRIVATE

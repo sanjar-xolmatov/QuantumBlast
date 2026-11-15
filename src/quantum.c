@@ -1,11 +1,11 @@
 #include "quantum.h"
+#include "../src/meteors/meteors.h"
 #include <raylib.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 
 #define MAX_LASERS 50
-#define MAX_METEORS 18
 
 int main(void) {
   const int screenHeight = 1080;
@@ -27,9 +27,12 @@ int main(void) {
   Texture2D playerTexture = LoadTexture("./assets/textures/player/playerShip1_blue.png");
   Texture2D cursorTexture = LoadTexture("./assets/textures/ui/cursors/cursor_e.png");
   Texture2D playerLaser = LoadTexture("./assets/textures/lasers/laserBlue01.png");
-  Texture2D meteorSmall = LoadTexture("./assets/textures/meteors/meteorBrown_small1.png");
-  Texture2D meteorMedium = LoadTexture("./assets/textures/meteors/meteorBrown_med1.png");
-  Texture2D meteorBig = LoadTexture("./assets/textures/meteors/meteorBrown_big2.png");
+
+  Texture2D meteorTextures[] = {
+    LoadTexture("./assets/textures/meteors/meteorBrown_small1.png"),
+    LoadTexture("./assets/textures/meteors/meteorBrown_med1.png"),
+    LoadTexture("./assets/textures/meteors/meteorBrown_big2.png")
+  };
 
   // Sounds
   Sound laserSmall = LoadSound("./assets/audio/laserSmall_004.ogg");
@@ -47,19 +50,7 @@ int main(void) {
     lasers[i] = laser;
   }
   // Meteor array
-  for (int i = 0; i < MAX_METEORS; i++) {
-    int meteorType = GetRandomValue(0, 2);
-    if (meteorType == 0) {
-      Meteor meteor = { meteorSmall, (Vector2){ GetRandomValue(20, screenWidth - 20), GetRandomValue(-750, -10) }, 200.0f, 50.0f, GetRandomValue(-50, 50), 0, true };
-      meteors[i] = meteor;
-    } else if (meteorType == 1) {
-      Meteor meteor = { meteorMedium, (Vector2){ GetRandomValue(20, screenWidth - 20), GetRandomValue(-750, -10) }, 100.0f, 100.0f, GetRandomValue(-25, 25), 0, true };
-      meteors[i] = meteor;
-    } else {
-      Meteor meteor = { meteorBig, (Vector2){ GetRandomValue(20, screenWidth - 20), GetRandomValue(-750, -10) }, 50.0f, 200.0f, GetRandomValue(-10, 10), 0, true };
-      meteors[i] = meteor;
-    }
-  }
+  InitMeteors(meteors, meteorTextures);  
 
   // Player HP text
   char hpText[100];
@@ -121,13 +112,7 @@ int main(void) {
         }
 
         // Spawn meteors
-        for (int i = 0; i < MAX_METEORS; i++) {
-            meteors[i].position.y += meteors[i].speed * deltaTime;
-            meteors[i].rotation += meteors[i].rotationSpeed * deltaTime;
-
-            if (meteors[i].position.y - meteors[i].texture.height - 30.0f >= screenHeight)
-              meteors[i].position = (Vector2){ GetRandomValue(0, screenWidth), GetRandomValue(-100, -10) };
-        }
+        SpawnMeteors(meteors, deltaTime);
 
         // Check collision between player and meteors
         for (int i = 0; i < MAX_METEORS; i++) {
@@ -207,14 +192,8 @@ int main(void) {
           }
         }
 
-        for (int i = 0; i < MAX_METEORS; i++) {
-          DrawTextureEx(
-              meteors[i].texture,
-              meteors[i].position, 
-              meteors[i].rotation,
-              1.0f,
-              WHITE);
-        }
+        // Draw Meteors
+        DrawMeteors(meteors);
 
         // Draw Player
         DrawTexturePro(
@@ -240,9 +219,10 @@ int main(void) {
   UnloadTexture(playerTexture);
   UnloadTexture(cursorTexture);
   UnloadTexture(playerLaser);
-  UnloadTexture(meteorSmall);
-  UnloadTexture(meteorMedium);
-  UnloadTexture(meteorBig);
+
+  for (long unsigned int i = 0; i < sizeof(meteorTextures) / sizeof(meteorTextures[0]); i++) {
+    UnloadTexture(meteorTextures[i]);
+  }
 
   UnloadSound(laserSmall);
 

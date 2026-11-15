@@ -3,6 +3,9 @@
 
 #include <raylib.h>
 
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+
 typedef struct Player {
   Texture2D texture;
   Vector2 position;
@@ -18,16 +21,6 @@ typedef struct Laser {
   float rotation;
   bool active;
 } Laser;
-
-typedef struct Meteor {
-  Texture2D texture;
-  Vector2 position;
-  float speed;
-  float damage;
-  float rotationSpeed;
-  float rotation;
-  bool active;
-} Meteor;
 
 typedef enum GameScreen {
   TITLE = 0,
