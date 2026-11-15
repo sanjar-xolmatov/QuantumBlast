@@ -13,14 +13,6 @@ typedef struct Player {
   float hp;
 } Player;
 
-typedef struct Laser {
-  Texture2D texture;
-  Vector2 position;
-  Vector2 velocity;
-  float damage;
-  float rotation;
-  bool active;
-} Laser;
 
 typedef enum GameScreen {
   TITLE = 0,

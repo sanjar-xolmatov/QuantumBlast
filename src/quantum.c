@@ -1,11 +1,11 @@
 #include "quantum.h"
 #include "../src/meteors/meteors.h"
+#include "../src/lasers/lasers.h"
 #include <raylib.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-#define MAX_LASERS 50
 
 int main(void) {
   const int screenHeight = 1080;
@@ -45,10 +45,7 @@ int main(void) {
   float rotation = 0.0f;
 
   // Laser array
-  for (int i = 0; i < MAX_LASERS; i++) {
-    Laser laser = { playerLaser, (Vector2){ 0, 0 }, (Vector2){ 800.0f * cosf(rotation * (M_PI/180.0f)), 800.0f * sinf(rotation * (M_PI/180.0f)) }, 100.0f, 0.0f, false };
-    lasers[i] = laser;
-  }
+  InitLasers(lasers, playerLaser);
   // Meteor array
   InitMeteors(meteors, meteorTextures);  
 
@@ -73,19 +70,9 @@ int main(void) {
       {
         // Fire Laser
         if (IsKeyPressed(KEY_E) || IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-          for (int i = 0; i < MAX_LASERS; i++) {
-            if (lasers[i].active == false) {
-              PlaySound(laserSmall);
-
-              lasers[i].active = true;
-              lasers[i].rotation = rotation;
-              lasers[i].position.x = player.position.x + (40.0f * cosf(lasers[i].rotation * (M_PI/180.0f)));
-              lasers[i].position.y = player.position.y + (40.0f * sinf(lasers[i].rotation * (M_PI/180.0f)));
-              lasers[i].velocity = (Vector2){ 800.0f * cosf(lasers[i].rotation * (M_PI/180.0f)), 800.0f * sinf(lasers[i].rotation * (M_PI/180.0f)) };
-              break;
-            }
-          }
+          FireLaser(lasers, laserSmall, player, rotation);
         }
+        UpdateLaserPosition(lasers, deltaTime);
 
         // Move Player
         if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) player.position.y += player.speed * deltaTime;
@@ -97,19 +84,6 @@ int main(void) {
         if (player.position.y >= screenHeight - player.texture.height) player.position.y = screenHeight - player.texture.height;
         if (player.position.x <= player.texture.width) player.position.x = player.texture.width;
         if (player.position.x >= screenWidth - player.texture.width) player.position.x = screenWidth - player.texture.width;
-
-        for (int i = 0; i < MAX_LASERS; i++) {
-          if (lasers[i].active == true) {
-
-            lasers[i].position.x += lasers[i].velocity.x * deltaTime;
-            lasers[i].position.y += lasers[i].velocity.y * deltaTime;
-            
-            if (lasers[i].position.x - lasers[i].texture.width - 30.0f > screenWidth) lasers[i].active = false;
-            if (lasers[i].position.x + 30.0f < 0) lasers[i].active = false;
-            if (lasers[i].position.y - lasers[i].texture.height - 30.0f > screenHeight) lasers[i].active = false;
-            if (lasers[i].position.y + 30.0f < 0) lasers[i].active = false;
-          }
-        }
 
         // Spawn meteors
         SpawnMeteors(meteors, deltaTime);
@@ -180,17 +154,7 @@ int main(void) {
         DrawTexture(background, 0, 0, WHITE);
 
         // Draw Lasers
-        for (int i = 0; i < MAX_LASERS; i++) {
-          if (lasers[i].active == true) {
-            DrawTexturePro(
-                playerLaser,
-                (Rectangle){ 0, 0, playerLaser.width, playerLaser.height },
-                (Rectangle){ lasers[i].position.x, lasers[i].position.y, lasers[i].texture.width, lasers[i].texture.height },
-                (Vector2){ lasers[i].texture.width/2.0f, lasers[i].texture.height/2.0f },
-                lasers[i].rotation + 90.0f,
-                WHITE);
-          }
-        }
+        DrawLasers(lasers, playerLaser);
 
         // Draw Meteors
         DrawMeteors(meteors);
