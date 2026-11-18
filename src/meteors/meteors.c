@@ -12,6 +12,7 @@ int InitMeteors(Meteor meteors[], Texture2D textures[]) {
         .rotationSpeed=GetRandomValue(-50, 50),
         .rotation=0,
         .hp=100.0f,
+        .maxHP=100.0f,
         .active=true
       };
       meteors[i] = meteor;
@@ -24,6 +25,7 @@ int InitMeteors(Meteor meteors[], Texture2D textures[]) {
         .rotationSpeed=GetRandomValue(-40, 40),
         .rotation=0,
         .hp=200.0f,
+        .maxHP=200.0f,
         .active=true
       };
       meteors[i] = meteor;
@@ -36,6 +38,7 @@ int InitMeteors(Meteor meteors[], Texture2D textures[]) {
         .rotationSpeed=GetRandomValue(-25, 25),
         .rotation=0,
         .hp=350.0f,
+        .maxHP=350.0f,
         .active=true
       };
       meteors[i] = meteor;

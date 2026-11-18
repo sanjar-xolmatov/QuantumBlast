@@ -13,6 +13,7 @@ typedef struct Meteor {
   float rotationSpeed;
   float rotation;
   float hp;
+  float maxHP;
   bool active;
 } Meteor;
 

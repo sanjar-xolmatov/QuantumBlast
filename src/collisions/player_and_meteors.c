@@ -1,6 +1,7 @@
 #include "collisions.h"
+#include "../quantum.h"
 
-void CollisionPlayerAndMeteors(Player *player, Meteor meteors[]) {
+void CollisionPlayerAndMeteors(Player *player, Meteor meteors[], GameScreen *currentScreen) {
   for (int i = 0; i < MAX_METEORS; i++) {
     bool collisionDetected = CheckCollisionRecs(
         (Rectangle){ 
@@ -16,7 +17,13 @@ void CollisionPlayerAndMeteors(Player *player, Meteor meteors[]) {
       );
     if (collisionDetected) {
       player->hp -= meteors[i].damage;
+
+      if (player->hp <= 0) {
+        *currentScreen = LOST;
+      }
+
       meteors[i].position = (Vector2){ GetRandomValue(0, GetScreenWidth()), GetRandomValue(-750, -10) };
+      meteors[i].hp = meteors[i].maxHP;
     }
   }
 }

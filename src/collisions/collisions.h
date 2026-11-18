@@ -5,6 +5,6 @@
 #include "../quantum.h"
 
 void CollisionMeteorAndLasers(Laser lasers[], Meteor meteors[]);
-void CollisionPlayerAndMeteors(Player *player, Meteor meteors[]);
+void CollisionPlayerAndMeteors(Player *player, Meteor meteors[], GameScreen *currentScreen);
 
 #endif

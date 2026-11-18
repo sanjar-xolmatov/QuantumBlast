@@ -8,6 +8,7 @@ typedef struct Player {
   Vector2 position;
   float speed;
   float hp;
+  const float maxHP;
 } Player;
 
 Player InitPlayer(Texture2D texture);

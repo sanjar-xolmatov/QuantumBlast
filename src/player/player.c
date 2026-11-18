@@ -2,7 +2,7 @@
 #include <raylib.h>
 
 Player InitPlayer(Texture2D texture) {
-  Player player = { texture, (Vector2){ (GetScreenWidth() - texture.width)/2.0f, (GetScreenHeight() - texture.height)/2.0f + 200.0f }, 400.0f, 700.0f };
+  Player player = { texture, (Vector2){ (GetScreenWidth() - texture.width)/2.0f, (GetScreenHeight() - texture.height)/2.0f + 200.0f }, 400.0f, 700.0f, 700.0f };
   return player;
 }
 
