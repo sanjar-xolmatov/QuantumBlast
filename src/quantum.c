@@ -1,4 +1,5 @@
 #include "quantum.h"
+#include "collisions/collisions.h"
 
 int main(void) {
   const int screenHeight = 1080;
@@ -71,52 +72,10 @@ int main(void) {
         SpawnMeteors(meteors, deltaTime);
 
         // Check collision between player and meteors
-        for (int i = 0; i < MAX_METEORS; i++) {
-          bool collisionDetected = CheckCollisionRecs(
-              (Rectangle){ 
-                player.position.x - player.texture.width/2.0f,
-                player.position.y - player.texture.height/2.0f,
-                (float)player.texture.width,
-                (float)player.texture.height }, 
-              (Rectangle){ 
-                meteors[i].position.x - meteors[i].texture.width/2.0f, 
-                meteors[i].position.y - meteors[i].texture.height/2.0f,
-                (float)meteors[i].texture.width,
-                (float)meteors[i].texture.height }
-            );
-          if (collisionDetected) {
-            player.hp -= meteors[i].damage;
-            meteors[i].position = (Vector2){ GetRandomValue(0, screenWidth), GetRandomValue(-750, -10) };
-          }
-        }
+        CollisionPlayerAndMeteors(&player, meteors);
 
         // Check collision between meteor and laser
-        for (int i = 0; i < MAX_LASERS; i++) {
-          if (lasers[i].active == false) continue;
-          for (int j = 0; j < MAX_METEORS; j++) {
-            if (lasers[i].active == true && meteors[j].active == true) {
-              bool collisionDetected = CheckCollisionPointRec(
-                  (Vector2){
-                    lasers[i].position.x,
-                    lasers[i].position.y - lasers[i].texture.height/2.0f
-                  },
-                  (Rectangle){ 
-                    meteors[j].position.x - meteors[j].texture.width/2.0f, 
-                    meteors[j].position.y - meteors[j].texture.height/2.0f,
-                    (float)meteors[j].texture.width,
-                    (float)meteors[j].texture.height }
-                  );
-
-              if (collisionDetected) {
-                lasers[i].active = false;
-                meteors[j].hp -= lasers[i].damage; 
-                if (meteors[j].hp <= 0) 
-                  meteors[j].position = (Vector2){ GetRandomValue(0, screenWidth), GetRandomValue(-750, -10) };
-                break;
-              }
-            }
-          }
-        }
+        CollisionMeteorAndLasers(lasers, meteors);
 
         break;
       }
