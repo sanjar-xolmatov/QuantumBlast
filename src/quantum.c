@@ -1,11 +1,4 @@
 #include "quantum.h"
-#include "../src/meteors/meteors.h"
-#include "../src/lasers/lasers.h"
-#include <raylib.h>
-#include <math.h>
-#include <stdbool.h>
-#include <stdio.h>
-
 
 int main(void) {
   const int screenHeight = 1080;
@@ -38,7 +31,7 @@ int main(void) {
   Sound laserSmall = LoadSound("./assets/audio/laserSmall_004.ogg");
 
   // Player 
-  Player player = { playerTexture, (Vector2){ (screenWidth - playerTexture.width)/2.0f, (screenHeight - playerTexture.height)/2.0f + 200.0f }, 400.0f, 500.0f };
+  Player player = InitPlayer(playerTexture);
 
   // Mouse 
   Vector2 mousePosition = { 0 };
@@ -48,9 +41,6 @@ int main(void) {
   InitLasers(lasers, playerLaser);
   // Meteor array
   InitMeteors(meteors, meteorTextures);  
-
-  // Player HP text
-  char hpText[100];
 
   SetTargetFPS(60);
 
@@ -75,15 +65,7 @@ int main(void) {
         UpdateLaserPosition(lasers, deltaTime);
 
         // Move Player
-        if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) player.position.y += player.speed * deltaTime;
-        if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) player.position.y -= player.speed * deltaTime;
-        if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) player.position.x += player.speed * deltaTime;
-        if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) player.position.x -= player.speed * deltaTime;
-
-        if (player.position.y <= player.texture.height) player.position.y = player.texture.height;
-        if (player.position.y >= screenHeight - player.texture.height) player.position.y = screenHeight - player.texture.height;
-        if (player.position.x <= player.texture.width) player.position.x = player.texture.width;
-        if (player.position.x >= screenWidth - player.texture.width) player.position.x = screenWidth - player.texture.width;
+        MovePlayer(&player, deltaTime);
 
         // Spawn meteors
         SpawnMeteors(meteors, deltaTime);
@@ -136,8 +118,6 @@ int main(void) {
           }
         }
 
-        sprintf(hpText, "HEALTH: %.0f", player.hp);
-
         break;
       }
     }
@@ -161,20 +141,14 @@ int main(void) {
         DrawMeteors(meteors);
 
         // Draw Player
-        DrawTexturePro(
-            player.texture,
-            (Rectangle){ 0, 0, player.texture.width, player.texture.height },
-            (Rectangle){ player.position.x, player.position.y, player.texture.width, player.texture.height },
-            (Vector2){ player.texture.width/2.0f, player.texture.height/2.0f },
-            rotation + 90.0f,
-            WHITE
-        );
+        DrawPlayer(player, rotation);
 
+        // Player HP
         DrawRectangleRec(
-            (Rectangle){ 5.0f, 5.0f, (400.0f * player.hp/500.0f), 20.0f },
+            (Rectangle){ 5.0f, 5.0f, (700.0f * player.hp/700.0f), 30.0f },
             RED
         );
-        DrawRectangleLinesEx((Rectangle){ 5.0f, 5.0f, 400.0f, 20.0f }, 1.0f, RAYWHITE);
+        DrawRectangleLinesEx((Rectangle){ 5.0f, 5.0f, 700.0f, 30.0f }, 1.0f, RAYWHITE);
 
         break;
       }

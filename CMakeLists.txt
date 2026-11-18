@@ -11,6 +11,7 @@ add_executable(quantumblast
   src/quantum.c
   src/meteors/meteors.c
   src/lasers/lasers.c
+  src/player/player.c
 )
 
 target_compile_options(quantumblast PRIVATE

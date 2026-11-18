@@ -3,7 +3,7 @@
 
 #include <raylib.h>
 #include <math.h>
-#include "../../src/quantum.h"
+#include "../../src/player/player.h"
 
 #define MAX_LASERS 50
 
