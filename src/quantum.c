@@ -113,22 +113,23 @@ int main(void) {
           if (lasers[i].active == false) continue;
           for (int j = 0; j < MAX_METEORS; j++) {
             if (lasers[i].active == true && meteors[j].active == true) {
-              bool collisionDetected = CheckCollisionRecs(
+              bool collisionDetected = CheckCollisionPointRec(
+                  (Vector2){
+                    lasers[i].position.x,
+                    lasers[i].position.y - lasers[i].texture.height/2.0f
+                  },
                   (Rectangle){ 
-                  lasers[i].position.x - lasers[i].texture.width/2.0f,
-                  lasers[i].position.y - lasers[i].texture.height/2.0f,
-                  (float)lasers[i].texture.width,
-                  (float)lasers[i].texture.height }, 
-                  (Rectangle){ 
-                  meteors[j].position.x - meteors[j].texture.width/2.0f, 
-                  meteors[j].position.y - meteors[j].texture.height/2.0f,
-                  (float)meteors[j].texture.width,
-                  (float)meteors[j].texture.height }
+                    meteors[j].position.x - meteors[j].texture.width/2.0f, 
+                    meteors[j].position.y - meteors[j].texture.height/2.0f,
+                    (float)meteors[j].texture.width,
+                    (float)meteors[j].texture.height }
                   );
 
               if (collisionDetected) {
                 lasers[i].active = false;
-                meteors[j].position = (Vector2){ GetRandomValue(0, screenWidth), GetRandomValue(-750, -10) };
+                meteors[j].hp -= lasers[i].damage; 
+                if (meteors[j].hp <= 0) 
+                  meteors[j].position = (Vector2){ GetRandomValue(0, screenWidth), GetRandomValue(-750, -10) };
                 break;
               }
             }
@@ -166,9 +167,14 @@ int main(void) {
             (Rectangle){ player.position.x, player.position.y, player.texture.width, player.texture.height },
             (Vector2){ player.texture.width/2.0f, player.texture.height/2.0f },
             rotation + 90.0f,
-            WHITE);
+            WHITE
+        );
 
-        DrawText(hpText, 10, 10, 30, RED);
+        DrawRectangleRec(
+            (Rectangle){ 5.0f, 5.0f, (400.0f * player.hp/500.0f), 20.0f },
+            RED
+        );
+        DrawRectangleLinesEx((Rectangle){ 5.0f, 5.0f, 400.0f, 20.0f }, 1.0f, RAYWHITE);
 
         break;
       }

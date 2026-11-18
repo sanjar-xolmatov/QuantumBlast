@@ -12,6 +12,7 @@ typedef struct Meteor {
   float damage;
   float rotationSpeed;
   float rotation;
+  float hp;
   bool active;
 } Meteor;
 
